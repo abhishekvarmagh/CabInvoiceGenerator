@@ -48,14 +48,15 @@ namespace CabInvoiceGeneratorTest
         }
 
         /// <summary>
-        /// Given Multiple Ride Should Return Total Fare.
+        /// Given Multiple Ride Should Return Invoice Summary.
         /// </summary>
         [Test]
-        public void GivenMultipleRides_ShouldReturnTotalFare()
+        public void GivenMultipleRides_ShouldReturnInvoiceSummary()
         {
             Ride[] rides = { new Ride(2.0, 5), new Ride(0.1, 1) }; 
-            double totalFare = this.cabInvoiceGenerator.CalculateTotalFare(rides);
-            Assert.AreEqual(30.0, totalFare);
+            InvoiceSummary actualInvoiceSummary = this.cabInvoiceGenerator.CalculateTotalFare(rides);
+            InvoiceSummary exceptedInvoiceSummary = new InvoiceSummary(rides.Length, 30.0);
+            Assert.AreEqual(exceptedInvoiceSummary, actualInvoiceSummary);
         }
     }
 }

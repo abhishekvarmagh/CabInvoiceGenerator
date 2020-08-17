@@ -6,3 +6,4 @@
 using System.Diagnostics.CodeAnalysis;
 
 [assembly: SuppressMessage("StyleCop.CSharp.OrderingRules", "SA1204:Static elements should appear before instance elements", Justification = "<Pending>", Scope = "member", Target = "~F:CabInvoiceGenerator.CabInvoicesGenerator.CostPerKilometer")]
+[assembly: SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:Fields should be private", Justification = "<Pending>", Scope = "member", Target = "~F:CabInvoiceGenerator.InvoiceSummary.NumberOfRides")]
