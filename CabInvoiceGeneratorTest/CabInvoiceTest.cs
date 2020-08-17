@@ -46,5 +46,16 @@ namespace CabInvoiceGeneratorTest
             double totalFare = this.cabInvoiceGenerator.CalculateFare(distance, time);
             Assert.AreEqual(5.0, totalFare);
         }
+
+        /// <summary>
+        /// Given Multiple Ride Should Return Total Fare.
+        /// </summary>
+        [Test]
+        public void GivenMultipleRides_ShouldReturnTotalFare()
+        {
+            Ride[] rides = { new Ride(2.0, 5), new Ride(0.1, 1) }; 
+            double totalFare = this.cabInvoiceGenerator.CalculateTotalFare(rides);
+            Assert.AreEqual(30.0, totalFare);
+        }
     }
 }
