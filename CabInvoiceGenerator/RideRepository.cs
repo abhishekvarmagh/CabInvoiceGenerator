@@ -5,13 +5,17 @@
 namespace CabInvoiceGenerator
 {
     using System.Collections.Generic;
+    using System.Linq;
 
     /// <summary>
     /// Ride Repository Class.
     /// </summary>
     public class RideRepository
     {
-        Dictionary<string, List<Ride>> userRides;
+        /// <summary>
+        /// Dictionary To Store User Id As Key And Ride Taken By User As Value.
+        /// </summary>
+        private readonly Dictionary<string, List<Ride>> userRides;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RideRepository"/> class.
@@ -23,21 +27,30 @@ namespace CabInvoiceGenerator
         }
 
         /// <summary>
-        /// 
+        /// Function To Add Ride.
         /// </summary>
-        /// <param name="userId"></param>
-        /// <param name="rides"></param>
+        /// <param name="userId">User Id.</param>
+        /// <param name="rides">Array Of Rides.</param>
         public void AddRides(string userId, Ride[] rides)
         {
             bool rideList = this.userRides.ContainsKey(userId);
-            if (rideList == false)
+            if (rideList == true)
             {
-                List<Ride> list = new List<Ride>();
+                List<Ride> list = this.userRides[userId];
                 list.AddRange(rides);
-                this.userRides.Add(userId, list);
+                this.userRides[userId] = list;
+            }
+            else
+            {
+                this.userRides.Add(userId, new List<Ride>(rides));
             }
         }
 
+        /// <summary>
+        /// Get Ride Of Particular User Id.
+        /// </summary>
+        /// <param name="userId">Value Of User Id.</param>
+        /// <returns>Ride Details.</returns>
         public Ride[] GetRide(string userId)
         {
             return this.userRides[userId].ToArray();

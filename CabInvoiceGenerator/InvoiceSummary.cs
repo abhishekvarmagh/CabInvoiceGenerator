@@ -4,15 +4,13 @@
 
 namespace CabInvoiceGenerator
 {
+    using System;
+
     /// <summary>
     /// Invoice Summary Class.
     /// </summary>
     public class InvoiceSummary
     {
-        public int NumberOfRides;
-        public double TotalFare;
-        public double AverageFare;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="InvoiceSummary"/> class.
         /// To Initialize A Newly Created Object.
@@ -27,30 +25,39 @@ namespace CabInvoiceGenerator
         }
 
         /// <summary>
+        /// Gets or sets Number Of Rides.
+        /// </summary>
+        public int NumberOfRides { get; set; }
+
+        /// <summary>
+        /// Gets or sets Total Fare Of Ride.
+        /// </summary>
+        public double TotalFare { get; set; }
+
+        /// <summary>
+        /// Gets or sets Average Fare Of Ride.
+        /// </summary>
+        public double AverageFare { get; set; }
+
+        /// <summary>
         /// Method For Equality Check.
         /// </summary>
         /// <param name="obj">Reference Of Object.</param>
         /// <returns>True Or False.</returns>
         public override bool Equals(object obj)
         {
-            if (obj == null)
-            {
-                return false;
-            }
-
-            if (obj == this)
-            {
-                return true;
-            }
-
-            if (this.GetType() == obj.GetType())
-            {
-                return true;
-            }
-
             InvoiceSummary that = (InvoiceSummary)obj;
             return this.NumberOfRides == that.NumberOfRides &&
                 this.TotalFare.CompareTo(that.TotalFare) == 0 && this.AverageFare.CompareTo(that.AverageFare) == 0;
+        }
+
+        /// <summary>
+        /// Override GetHashCode Method.
+        /// </summary>
+        /// <returns>Return The Hash Code Value.</returns>
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(this.NumberOfRides, this.TotalFare, this.AverageFare);
         }
     }
 }
