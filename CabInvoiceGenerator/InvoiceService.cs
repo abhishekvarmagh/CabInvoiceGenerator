@@ -9,12 +9,22 @@ namespace CabInvoiceGenerator
     /// <summary>
     /// Cab Invoice Generator Class.
     /// </summary>
-    public class CabInvoicesGenerator
+    public class InvoiceService
     {
         private static readonly double CostPerKilometer = 10.0;
         private static readonly double CostPerMinute = 1.0;
         private static readonly double MinimumFare = 5.0;
         private double totalFare = 0.0;
+        private RideRepository rideRepository;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="InvoiceService"/> class.
+        /// To Initialize A Newly Created Object.
+        /// </summary>
+        public InvoiceService()
+        {
+            this.rideRepository = new RideRepository();
+        }
 
         /// <summary>
         /// Function To Calculate Fare.
@@ -42,6 +52,26 @@ namespace CabInvoiceGenerator
             }
 
             return new InvoiceSummary(rides.Length, totaFare);
+        }
+
+        /// <summary>
+        /// Function To Add Rides With User Id.
+        /// </summary>
+        /// <param name="userId">User Id.</param>
+        /// <param name="rides">Rides.</param>
+        public void AddRides(string userId, Ride[] rides)
+        {
+            this.rideRepository.AddRides(userId, rides);
+        }
+
+        /// <summary>
+        /// Function To Get Invoice Summmary Of Particular User Id.
+        /// </summary>
+        /// <param name="userId">User Id.</param>
+        /// <returns>Invoice Summary.</returns>
+        public InvoiceSummary GetInvoiceSummary(string userId)
+        {
+            return this.CalculateTotalFare(this.rideRepository.GetRide(userId));
         }
     }
 }

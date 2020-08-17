@@ -12,7 +12,7 @@ namespace CabInvoiceGeneratorTest
     /// </summary>
     public class CabInvoiceTest
     {
-        private CabInvoicesGenerator cabInvoiceGenerator;
+        private InvoiceService invoiceService;
 
         /// <summary>
         /// Provide a common set of functions that are performed just before each test method is called.
@@ -20,7 +20,7 @@ namespace CabInvoiceGeneratorTest
         [SetUp]
         public void Setup()
         {
-            this.cabInvoiceGenerator = new CabInvoicesGenerator();
+            this.invoiceService = new InvoiceService();
         }
 
         /// <summary>
@@ -31,7 +31,7 @@ namespace CabInvoiceGeneratorTest
         {
             double distance = 5.0;
             int time = 5;
-            double totalFare = this.cabInvoiceGenerator.CalculateFare(distance, time);
+            double totalFare = this.invoiceService.CalculateFare(distance, time);
             Assert.AreEqual(55.0, totalFare);
         }
 
@@ -43,7 +43,7 @@ namespace CabInvoiceGeneratorTest
         {
             double distance = 0.1;
             int time = 1;
-            double totalFare = this.cabInvoiceGenerator.CalculateFare(distance, time);
+            double totalFare = this.invoiceService.CalculateFare(distance, time);
             Assert.AreEqual(5.0, totalFare);
         }
 
@@ -54,7 +54,21 @@ namespace CabInvoiceGeneratorTest
         public void GivenMultipleRides_ShouldReturnInvoiceSummary()
         {
             Ride[] rides = { new Ride(2.0, 5), new Ride(0.1, 1) }; 
-            InvoiceSummary actualInvoiceSummary = this.cabInvoiceGenerator.CalculateTotalFare(rides);
+            InvoiceSummary actualInvoiceSummary = this.invoiceService.CalculateTotalFare(rides);
+            InvoiceSummary exceptedInvoiceSummary = new InvoiceSummary(rides.Length, 30.0);
+            Assert.AreEqual(exceptedInvoiceSummary, actualInvoiceSummary);
+        }
+
+        /// <summary>
+        /// Given Given User Id And Multiple Ride Should Return Invoice Summary.
+        /// </summary>
+        [Test]
+        public void GivenUserIdAndMultipleRides_ShouldReturnInvoiceSummary()
+        {
+            string userId = "xyz@abc.com";
+            Ride[] rides = { new Ride(2.0, 5), new Ride(0.1, 1) };
+            this.invoiceService.AddRides(userId, rides);
+            InvoiceSummary actualInvoiceSummary = this.invoiceService.GetInvoiceSummary(userId);
             InvoiceSummary exceptedInvoiceSummary = new InvoiceSummary(rides.Length, 30.0);
             Assert.AreEqual(exceptedInvoiceSummary, actualInvoiceSummary);
         }
