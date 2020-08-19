@@ -13,6 +13,26 @@ namespace CabInvoiceGeneratorTest
     public class CabInvoiceTest
     {
         /// <summary>
+        /// Distance Covered For First Ride.
+        /// </summary>
+        private readonly double distanceOne = 2.0;
+
+        /// <summary>
+        /// Time Taken For First Ride.
+        /// </summary>
+        private readonly int timeOne = 5;
+
+        /// <summary>
+        /// Distance Covered For Second Ride.
+        /// </summary>
+        private readonly double distanceTwo = 0.1;
+
+        /// <summary>
+        ///  Time Taken For Second Ride.
+        /// </summary>
+        private readonly int timeTwo = 1;
+
+        /// <summary>
         /// Instance Variable Of Ride Repository.
         /// </summary>
         private RideRepository rideRepository;
@@ -39,9 +59,9 @@ namespace CabInvoiceGeneratorTest
         [Test]
         public void GivenDistanceAndTime_ShouldReturnTotalFare()
         {
-            Ride[] ride = { new Ride(5.0, 5, Category.Normal) };
+            Ride[] ride = { new Ride(this.distanceOne, this.timeOne, Category.Normal) };
             double totalFare = this.invoiceService.CalculateTotalFare(ride).TotalFare;
-            Assert.AreEqual(55.0, totalFare);
+            Assert.AreEqual(25.0, totalFare);
         }
 
         /// <summary>
@@ -50,7 +70,7 @@ namespace CabInvoiceGeneratorTest
         [Test]
         public void GivenDistanceAndTime_ShouldReturnMinimumTotalFare()
         {
-            Ride[] ride = { new Ride(0.1, 1, Category.Normal) };
+            Ride[] ride = { new Ride(this.distanceTwo, this.timeTwo, Category.Normal) };
             double totalFare = this.invoiceService.CalculateTotalFare(ride).TotalFare;
             Assert.AreEqual(5.0, totalFare);
         }
@@ -61,7 +81,7 @@ namespace CabInvoiceGeneratorTest
         [Test]
         public void GivenMultipleRides_ShouldReturnInvoiceSummary()
         {
-            Ride[] rides = { new Ride(2.0, 5, Category.Normal), new Ride(0.1, 1, Category.Normal) };
+            Ride[] rides = { new Ride(this.distanceOne, this.timeOne, Category.Normal), new Ride(this.distanceTwo, this.timeTwo, Category.Normal) };
             InvoiceSummary actualInvoiceSummary = this.invoiceService.CalculateTotalFare(rides);
             InvoiceSummary exceptedInvoiceSummary = new InvoiceSummary(rides.Length, 30.0);
             Assert.AreEqual(exceptedInvoiceSummary, actualInvoiceSummary);
@@ -74,7 +94,7 @@ namespace CabInvoiceGeneratorTest
         public void GivenUserIdAndMultipleRides_ShouldReturnInvoiceSummary()
         {
             string userId = "xyz@abc.com";
-            Ride[] rides = { new Ride(2.0, 5, Category.Normal), new Ride(0.1, 1, Category.Normal) };
+            Ride[] rides = { new Ride(this.distanceOne, this.timeOne, Category.Normal), new Ride(this.distanceTwo, this.timeTwo, Category.Normal) };
             this.invoiceService.AddRides(userId, rides);
             InvoiceSummary actualInvoiceSummary = this.invoiceService.GetInvoiceSummary(userId);
             InvoiceSummary exceptedInvoiceSummary = new InvoiceSummary(rides.Length, 30.0);
@@ -88,7 +108,7 @@ namespace CabInvoiceGeneratorTest
         public void GivenUserIdAndMultipleRidesWithOnePremiumAndOneNormal_ShouldReturnInvoiceSummary()
         {
             string userId = "xyz@abc.com";
-            Ride[] rides = { new Ride(2.0, 5, Category.Premium), new Ride(0.1, 1, Category.Normal) };
+            Ride[] rides = { new Ride(this.distanceOne, this.timeOne, Category.Premium), new Ride(this.distanceTwo, this.timeTwo, Category.Normal) };
             this.invoiceService.AddRides(userId, rides);
             InvoiceSummary actualInvoiceSummary = this.invoiceService.GetInvoiceSummary(userId);
             InvoiceSummary exceptedInvoiceSummary = new InvoiceSummary(rides.Length, 45.0);
@@ -102,11 +122,23 @@ namespace CabInvoiceGeneratorTest
         public void GivenUserIdAndMultiplePremiumRide_ShouldReturnInvoiceSummary()
         {
             string userId = "xyz@abc.com";
-            Ride[] rides = { new Ride(2.0, 5, Category.Premium), new Ride(0.1, 1, Category.Premium) };
+            Ride[] rides = { new Ride(this.distanceOne, this.timeOne, Category.Premium), new Ride(this.distanceTwo, this.timeTwo, Category.Premium) };
             this.invoiceService.AddRides(userId, rides);
             InvoiceSummary actualInvoiceSummary = this.invoiceService.GetInvoiceSummary(userId);
             InvoiceSummary exceptedInvoiceSummary = new InvoiceSummary(rides.Length, 60.0);
             Assert.AreEqual(exceptedInvoiceSummary, actualInvoiceSummary);
+        }
+
+        /// <summary>
+        /// Given Invalid User Identification Format Should Custom Exception Message.
+        /// </summary>
+        [Test]
+        public void GivenUserIdAndRides_WhenUserIdNotValid_ShouldThrowCustomException()
+        {
+            string userId = "defgh";
+            Ride[] rides = { new Ride(2.0, 5, Category.Normal), new Ride(this.distanceTwo, this.timeTwo, Category.Normal) };
+            var error = Assert.Throws<CabInvoiceException>(() => this.invoiceService.AddRides(userId, rides));
+            Assert.AreEqual("Invalid User Identification Format.", error.Message);
         }
     }
 }

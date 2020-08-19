@@ -4,6 +4,8 @@
 
 namespace CabInvoiceGenerator
 {
+    using System.Text.RegularExpressions;
+
     /// <summary>
     /// Cab Invoice Generator Class.
     /// </summary>
@@ -46,6 +48,11 @@ namespace CabInvoiceGenerator
         /// <param name="rides">Array Of Rides.</param>
         public void AddRides(string userId, Ride[] rides)
         {
+            if (!Regex.IsMatch(userId, @"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,})+)$", RegexOptions.IgnoreCase))
+            {
+                throw new CabInvoiceException("Invalid User Identification Format.");
+            }
+
             this.rideRepository.AddRides(userId, rides);
         }
 
